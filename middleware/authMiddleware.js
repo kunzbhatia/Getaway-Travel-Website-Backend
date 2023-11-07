@@ -1,17 +1,26 @@
 const jwt = require('jsonwebtoken');
 
-const authenticateUser = (req, res, next) => {
-  const token = req.header('Authorization');
-  if (!token) {
-    return res.status(401).json({ message: 'Authentication required' });
+const authMiddleware = (req, res, next) => {
+  const accessTokenHeader = req.header('Authorization');
+
+  if (!accessTokenHeader || !accessTokenHeader.startsWith('Bearer ')) {
+    return res.status(401).json({ error: 'Unauthorized' });
   }
+
+  const accessToken = accessTokenHeader.replace('Bearer ', '');
+
   try {
-    const decodedToken = jwt.verify(token, 'your-secret-key');
-    req.user = decodedToken.userId;
-    next();
+    // Verify the access token using your JWT secret key
+    const decoded = jwt.verify(accessToken,process.env.JWT_SECRET_KEY);
+
+    // Attach user data to the request object for further processing
+    req.user = decoded.user;
+    next(); // Call the next middleware or route handler
   } catch (error) {
-    res.status(401).json({ message: 'Invalid token' });
+    // Handle invalid or expired access tokens
+    console.error('Invalid access token:', error);
+    res.status(401).json({ error: 'Unauthorized' });
   }
 };
 
-module.exports = authenticateUser;
+module.exports = authMiddleware;
