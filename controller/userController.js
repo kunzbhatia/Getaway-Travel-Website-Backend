@@ -95,3 +95,21 @@ exports.getAllUsers = async (req, res) => {
     res.status(500).json({ error: 'Internal Server Error' });
   }
 };
+
+  exports.getUserDetails = async (req,res) => {
+    try {
+      console.log("one");
+      const email = req.query.email;
+      console.log(email);
+      console.log("two");
+      const user = await User.findOne({email: email});
+      console.log(user.name);
+      if(!user) {
+        res.status(201).json({message: "User Not Found", success: false});
+      };
+      res.status(200).json({message: "User is found", user, success: true});
+    } catch (error) {
+      // console.log(error);
+      res.status(500).json({message: "Internal Server Error", success: false});
+    }
+  };

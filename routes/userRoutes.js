@@ -14,6 +14,7 @@ router.get('/list', authenticateMiddleware, userController.getCurrentUser);
 
 
 router.get('/all', userController.getAllUsers);
+router.get('/getUser', userController.getUserDetails);
 
 module.exports = router;
 
