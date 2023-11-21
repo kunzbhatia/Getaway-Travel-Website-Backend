@@ -1,18 +1,54 @@
-const mongoose = require('mongoose');
-const Schema = mongoose.Schema;
+import mongoose from "mongoose";
 
-const tourSchema = new Schema({
-    ItineraryId: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Tour',
-        required: true
+const tourSchema = new mongoose.Schema(
+  {
+    title: {
+      type: String,
+      required: true,
+      unique: true,
     },
-    description: {
-        type: String,
-        required: true
+    city: {
+      type: String,
+      required: true,
     },
-});
+    address: {
+      type: String,
+      required: true,
+    },
+    distance: {
+      type: Number,
+      required: true,
+    },
+    photo: {
+      type: String,
+      required: true,
+    },
+    desc: {
+      type: String,
+      required: true,
+    },
+    price: {
+      type: Number,
+      required: true,
+    },
+    maxGroupSize: {
+      type: Number,
+      required: true,
+    },
 
-const Tour = mongoose.model('Tour', tourSchema);
+    reviews: [
+      {
+        type: mongoose.Types.ObjectId,
+        ref: "Review",
+      },
+    ],
 
-module.exports = Tour;
+    featured: {
+      type: Boolean,
+      default: false,
+    },
+  },
+  { timestamps: true }
+);
+
+export default mongoose.model("Tour", tourSchema);

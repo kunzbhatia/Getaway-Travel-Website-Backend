@@ -1,19 +1,39 @@
-const mongoose = require('mongoose');
+import mongoose from "mongoose";
 
-const bookingSchema = new mongoose.Schema({
+const bookingSchema = new mongoose.Schema(
+  {
     userId: {
-        type: String,
-        ref: 'User',
-        required: true
+      type: String,
     },
-    ItineraryId: {
-        type: String,
-        ref: 'Tour',
-        required: true
+    userEmail: {
+      type: String,
     },
-    // Add more fields for booking details
-});
+    tourName: {
+      type: String,
+      required: true,
+    },
+    fullName: {
+      type: String,
+      required: true,
+    },
+    guestSize: {
+      type: Number,
+      require: true,
+    },
+    phone: {
+      type: Number,
+      require: true,
+    },
+    bookAt: {
+      type: Date,
+      //   require: true,
+    },
+    totalAmount: {
+      type: Number,
+      required: true,
+    },
+  },
+  { timestamps: true }
+);
 
-const Booking = mongoose.model('Booking', bookingSchema);
-
-module.exports = Booking;
+export default mongoose.model("Booking", bookingSchema);

@@ -1,30 +1,51 @@
-require('dotenv').config();
-const express = require('express');
-const connectDb = require('./config/db');
-const userRoutes = require('./routes/userRoutes');
-const bookingRoutes = require('./routes/bookingRoutes');
-const adminRoutes = require('./routes/adminRoutes');
-const isAdmin = require('./middleware/isAdmin');
+import express from "express";
+import dotenv from "dotenv";
+import mongoose from "mongoose";
+import cors from "cors";
+import cookieParser from "cookie-parser";
+
+import tourRoute from "./routes/tours.js";
+import userRoute from "./routes/users.js";
+import authRoute from "./routes/auth.js";
+import reviewRoute from "./routes/reviews.js";
+import bookingRoute from "./routes/bookings.js";
+
+dotenv.config();
 const app = express();
-const cors = require('cors');
+const port = process.env.PORT || 8080;
+const corsOptions = {
+  origin: true,
+  credentials: true,
+};
 
-
-// Connect to MongoDB
-connectDb();
+// Database connection
+// mongoose.set("strictQuery", false);
+const connect = async () => {
+  try {
+    await mongoose.connect(process.env.MONGO_URI, {
+      useNewUrlParser: true,
+      useUnifiedTopology: true,
+    });
+    console.log("MongoDB connected");
+  } catch (err) {
+    console.log("MongoDB connection failed: ", err);
+  }
+};
 
 // Middleware
 app.use(express.json());
-app.use(cors());
+app.use(cors(corsOptions));
+app.use(cookieParser());
+app.use("/api/v1/auth", authRoute);
+app.use("/api/v1/tours", tourRoute);
+app.use("/api/v1/users", userRoute);
+app.use("/api/v1/review", reviewRoute);
+app.use("/api/v1/booking", bookingRoute);
 
-// Routes
-app.use('/api/users', userRoutes);
-app.use('/api', bookingRoutes);
-app.use('/api/admin', isAdmin, adminRoutes);
+app.listen(port, () => {
+  connect();
+  console.log(`Server listening on port ${port}`);
+});
 app.get('/', (req, res) => {
-    res.send('Welcome to Getaway by Saniya and Kunal');
-  });
-  
-
-const PORT = 8080;
-app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
-
+  res.send('Welcome to Getaway by Saniya and Kunal');
+});
