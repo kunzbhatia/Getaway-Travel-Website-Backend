@@ -42,11 +42,13 @@ app.use("/api/v1/users", userRoute);
 app.use("/api/v1/review", reviewRoute);
 app.use("/api/v1/booking", bookingRoute);
 
+app.get('/', (req, res) => {
+  res.send('Welcome to Getaway by Saniya and Kunal');
+});
+
 app.listen(port, () => {
   connect();
   console.log(`Server listening on port ${port}`);
 });
 
-app.get('/', (req, res) => {
-  res.send('Welcome to Getaway by Saniya and Kunal');
-});
+
